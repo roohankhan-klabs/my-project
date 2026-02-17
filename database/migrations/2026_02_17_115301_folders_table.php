@@ -26,6 +26,9 @@ return new class extends Migration
             $table->index('user_id');
             $table->index('parent_id');
         });
+
+        Schema::table('folders', function (Blueprint $table) {
+        });
     }
 
     /**
