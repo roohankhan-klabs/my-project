@@ -29,7 +29,7 @@
                         </ul>
                     </div>
                 @endif
-                <form method="POST" action="{{ route('login') }}" class="space-y-4">
+                <form method="POST" action="{{ route('userSignin') }}" class="space-y-4">
                     @csrf
                     <div>
                         <label for="email" class="block text-sm font-medium text-slate-700">Email</label>

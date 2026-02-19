@@ -13,7 +13,7 @@
                 Please login or create an account to continue.
             </p>
             <a
-                href="{{ route('login') }}"
+                href="{{ route('signin') }}"
                 class="inline-flex items-center justify-center rounded-md bg-sky-600 px-5 py-2 text-sm font-semibold text-white hover:bg-sky-700 focus:outline-none focus:ring-2 focus:ring-sky-500 focus:ring-offset-2"
             >
                 Go to Login / Register

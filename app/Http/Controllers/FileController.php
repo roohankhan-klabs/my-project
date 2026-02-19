@@ -4,6 +4,7 @@ namespace App\Http\Controllers;
 
 use App\Models\File as FileModel;
 use Illuminate\Http\Request;
+use Illuminate\Support\Facades\Storage;
 
 class FileController extends Controller
 {
@@ -32,5 +33,22 @@ class FileController extends Controller
         return redirect()
             ->back()
             ->with('success', 'File uploaded successfully.');
+    }
+
+    public function destroy(Request $request)
+    {
+        $validated = $request->validate([
+            'file_id' => 'required|exists:files,id',
+        ]);
+
+        $file = FileModel::where('user_id', $request->user()->id)
+            ->findOrFail($validated['file_id']);
+
+        Storage::disk('public')->delete($file->path);
+        $file->delete();
+
+        return redirect()
+            ->back()
+            ->with('success', 'File deleted.');
     }
 }

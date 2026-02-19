@@ -2,11 +2,9 @@
 
 namespace App\Http\Controllers;
 
-use Illuminate\Http\Request;
-use App\Models\User;
-use Illuminate\Support\Facades\Auth;
-use App\Models\Folder;
 use App\Models\File;
+use App\Models\Folder;
+use Illuminate\Support\Facades\Auth;
 
 class UserController extends Controller
 {
@@ -16,6 +14,10 @@ class UserController extends Controller
 
         $currentFolderId = request()->query('folder');
         $currentFolder = null;
+        $rootFolder = Folder::query()
+            ->where('user_id', $user->id)
+            ->where('is_root', true)
+            ->first();
 
         if ($currentFolderId) {
             $currentFolder = Folder::query()
@@ -33,9 +35,9 @@ class UserController extends Controller
                 ->where('parent_id', $currentFolder->id)
                 ->get();
         } else {
-            $folders = $foldersQuery
-                ->whereNull('parent_id')
-                ->get();
+            $folders = $rootFolder
+                ? $foldersQuery->where('parent_id', $rootFolder->id)->get()
+                : $foldersQuery->whereNull('parent_id')->get();
         }
 
         $filesQuery = File::query()
@@ -43,15 +45,13 @@ class UserController extends Controller
             ->orderBy('name');
 
         if ($currentFolder) {
-            $files = $filesQuery
-                ->where('folder_id', $currentFolder->id)
-                ->get();
+            $files = $currentFolder->is_root
+                ? $filesQuery->whereNull('folder_id')->get()
+                : $filesQuery->where('folder_id', $currentFolder->id)->get();
         } else {
-            $files = $filesQuery
-                ->whereNull('folder_id')
-                ->get();
+            $files = $filesQuery->whereNull('folder_id')->get();
         }
 
-        return view('dashboard', compact('folders', 'files', 'currentFolder'));
+        return view('dashboard', compact('folders', 'files', 'currentFolder', 'rootFolder'));
     }
 }
