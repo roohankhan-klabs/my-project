@@ -13,7 +13,7 @@
         <div class="mx-auto max-w-5xl flex items-center justify-between px-4 py-3">
             <h1 class="text-lg font-semibold text-slate-900">Your Drive</h1>
             <div class="flex gap-2">
-                <form method="POST" action="{{ route('logout') }}">
+                <form method="POST" action="{{ route('userLogout') }}">
                     @csrf
                     <button
                         type="submit"
@@ -21,11 +21,11 @@
                         Logout
                     </button>
                 </form>
-                <a
+                <!-- <a
                     href="{{ route('login') }}"
                     class="inline-flex items-center rounded-md bg-purple-600 px-3 py-1.5 text-xs font-semibold text-white hover:bg-purple-700 focus:outline-none focus:ring-2 focus:ring-purple-500 focus:ring-offset-2 transition-colors">
                     Nova
-                </a>
+                </a> -->
             </div>
 
         </div>

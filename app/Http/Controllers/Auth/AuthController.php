@@ -22,6 +22,11 @@ class AuthController extends Controller
         if (Auth::attempt($request->only('email', 'password'), $request->boolean('remember'))) {
             $request->session()->regenerate();
 
+            $user = Auth::user();
+            if ($user->is_admin) {
+                return redirect()->to('/nova/resources/users');
+            }
+
             return redirect()->route('dashboard');
         }
 
@@ -48,16 +53,20 @@ class AuthController extends Controller
         Auth::login($user);
         $request->session()->regenerate();
 
+        if ($user->is_admin) {
+            return redirect()->to('/nova/resources/users')->with('success', 'Registration successful');
+        }
+
         return redirect()->route('dashboard')->with('success', 'Registration successful');
     }
 
-    public function logout(Request $request)
+    public function userLogout(Request $request)
     {
         Auth::logout();
 
         $request->session()->invalidate();
         $request->session()->regenerateToken();
 
-        return redirect()->route('login');
+        return redirect()->route('signin');
     }
 }

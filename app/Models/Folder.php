@@ -11,7 +11,7 @@ class Folder extends Model
     protected $fillable = [
         'user_id',
         'parent_id',
-        'is_root',
+        // 'is_root',
         'name',
     ];
 
@@ -24,14 +24,14 @@ class Folder extends Model
                     : Auth::id();
             }
 
-            if (($folder->is_root ?? false) === true) {
-                return;
-            }
+            // if (($folder->is_root ?? false) === true) {
+            //     return;
+            // }
 
             if ($folder->parent_id === null && $folder->user_id !== null) {
                 $rootId = DB::table('folders')
                     ->where('user_id', $folder->user_id)
-                    ->where('is_root', true)
+                    // ->where('is_root', true)
                     ->value('id');
 
                 if ($rootId) {
@@ -40,11 +40,11 @@ class Folder extends Model
             }
         });
 
-        static::deleting(function (Folder $folder): void {
-            if (($folder->is_root ?? false) === true) {
-                abort(403, 'Root folder cannot be deleted.');
-            }
-        });
+        // static::deleting(function (Folder $folder): void {
+        //     if (($folder->is_root ?? false) === true) {
+        //         abort(403, 'Root folder cannot be deleted.');
+        //     }
+        // });
     }
 
     public function user()

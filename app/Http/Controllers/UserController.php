@@ -8,7 +8,7 @@ use Illuminate\Support\Facades\Auth;
 
 class UserController extends Controller
 {
-    public function drive()
+    public function dashboard()
     {
         $user = Auth::user();
 
@@ -16,7 +16,7 @@ class UserController extends Controller
         $currentFolder = null;
         $rootFolder = Folder::query()
             ->where('user_id', $user->id)
-            ->where('is_root', true)
+            // ->where('is_root', true)
             ->first();
 
         if ($currentFolderId) {
@@ -45,9 +45,8 @@ class UserController extends Controller
             ->orderBy('name');
 
         if ($currentFolder) {
-            $files = $currentFolder->is_root
-                ? $filesQuery->whereNull('folder_id')->get()
-                : $filesQuery->where('folder_id', $currentFolder->id)->get();
+            $files = $currentFolder->$filesQuery->where('folder_id', $currentFolder->id)->get();
+                // ? $filesQuery->whereNull('folder_id')->get()
         } else {
             $files = $filesQuery->whereNull('folder_id')->get();
         }
