@@ -14,9 +14,10 @@ class UserController extends Controller
 
         $currentFolderId = request()->query('folder');
         $currentFolder = null;
+
         $rootFolder = Folder::query()
             ->where('user_id', $user->id)
-            // ->where('is_root', true)
+            ->whereNull('parent_id')
             ->first();
 
         if ($currentFolderId) {
@@ -35,9 +36,9 @@ class UserController extends Controller
                 ->where('parent_id', $currentFolder->id)
                 ->get();
         } else {
-            $folders = $rootFolder
-                ? $foldersQuery->where('parent_id', $rootFolder->id)->get()
-                : $foldersQuery->whereNull('parent_id')->get();
+            $folders = $foldersQuery
+                ->whereNull('parent_id')
+                ->get();
         }
 
         $filesQuery = File::query()
@@ -45,11 +46,13 @@ class UserController extends Controller
             ->orderBy('name');
 
         if ($currentFolder) {
-            $files = $currentFolder->$filesQuery->where('folder_id', $currentFolder->id)->get();
-                // ? $filesQuery->whereNull('folder_id')->get()
+            $files = $filesQuery
+                ->where('folder_id', $currentFolder->id)
+                ->get();
         } else {
             $files = $filesQuery->whereNull('folder_id')->get();
         }
+        // dd($files, $folders);
 
         return view('dashboard', compact('folders', 'files', 'currentFolder', 'rootFolder'));
     }

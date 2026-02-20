@@ -3,6 +3,7 @@
 namespace App\Nova\Dashboards;
 
 use App\Nova\Metrics\NewUsers;
+use App\Nova\Metrics\StorageUsed;
 use Laravel\Nova\Dashboard;
 use Illuminate\Http\Request;
 use Laravel\Nova\Menu\MenuItem;
@@ -38,6 +39,7 @@ class UserInsights extends Dashboard
     {
         return [
             NewUsers::make(),
+            StorageUsed::make(),
             // UsersOverTime::make(),
             //
         ];

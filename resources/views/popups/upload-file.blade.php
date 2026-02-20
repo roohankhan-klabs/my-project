@@ -1,6 +1,6 @@
 <div id="upload-file" class="w-full max-w-sm rounded-xl bg-white p-5 shadow-sm border border-slate-100">
     <div class="flex items-center justify-between mb-4">
-        <h2 class="text-sm font-semibold text-slate-900">Upload file</h2>
+        <h2 class="text-sm font-semibold text-slate-900">Upload files</h2>
         <button
             type="button"
             onclick="window.dashboardModals.closeModal('upload-file-modal')"
@@ -16,13 +16,15 @@
         class="space-y-4">
         @csrf
         <div>
-            <label for="file" class="block text-xs font-medium text-slate-700">File</label>
+            <label for="file" class="block text-xs font-medium text-slate-700">Files</label>
             <input
                 id="file"
-                name="file"
+                name="file[]"
                 type="file"
+                multiple
                 required
-                class="mt-1 block w-full text-sm text-slate-900 file:mr-4 file:rounded-md file:border-0 file:bg-slate-800 file:px-3 file:py-1.5 file:text-xs file:font-semibold file:text-white hover:file:bg-slate-900">
+                class="mt-1 block w-full text-sm text-slate-900 file:mr-4 file:rounded-md file:border-0 file:bg-slate-800 file:px-3 file:py-1.5 file:text-xs file:font-semibold file:text-white hover:file:bg-slate-900"
+            >
         </div>
         @isset($currentFolder)
         <input type="hidden" name="folder_id" value="{{ $currentFolder->id }}">
@@ -43,7 +45,7 @@
         <button
             type="submit"
             class="w-full rounded-md bg-emerald-600 px-4 py-2 text-sm font-semibold text-white hover:bg-emerald-700 focus:outline-none focus:ring-2 focus:ring-emerald-500 focus:ring-offset-2">
-            Upload file
+            Upload files
         </button>
     </form>
 </div>
