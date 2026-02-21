@@ -7,6 +7,7 @@ use Filament\Actions\DeleteBulkAction;
 use Filament\Actions\EditAction;
 use Filament\Actions\ViewAction;
 use Filament\Tables\Columns\TextColumn;
+use Filament\Tables\Columns\IconColumn;
 use Filament\Tables\Table;
 
 class UsersTable
@@ -36,9 +37,10 @@ class UsersTable
                 //     ->sortable(),
                 TextColumn::make('storage_used')
                     ->numeric()
-                    ->sortable(),
-                TextColumn::make('is_admin')
-                    ->numeric()
+                    ->sortable()
+                    ->formatStateUsing(fn ($state) => number_format($state / 1024, 2) . ' MB'),
+                IconColumn::make('is_admin')
+                    ->boolean()
                     ->sortable(),
             ])
             ->filters([

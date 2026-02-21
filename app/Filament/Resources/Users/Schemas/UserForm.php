@@ -5,6 +5,8 @@ namespace App\Filament\Resources\Users\Schemas;
 use Filament\Forms\Components\DateTimePicker;
 use Filament\Forms\Components\TextInput;
 use Filament\Forms\Components\Textarea;
+use Filament\Forms\Components\ToggleButtons;
+use Filament\Forms\Components\Toggle;
 use Filament\Schemas\Schema;
 use Filament\Support\Enums\Operation;
 
@@ -19,13 +21,15 @@ class UserForm
                 TextInput::make('email')
                     ->label('Email address')
                     ->email()
-                    ->required(),
-                // DateTimePicker::make('email_verified_at'),
+                    ->required()
+                    ->unique(ignoreRecord: true),
                 TextInput::make('password')
                     ->password()
-                    ->required(),
-                    // ->visibleOn(Operation::Create)
-                    // ->hiddenOn(Operation::Edit),
+                    ->revealable()
+                    ->dehydrated(fn ($state) => filled($state))
+                    ->required(fn (string $operation) => $operation === Operation::Create)
+                    ->label(fn (string $operation) => $operation === Operation::Edit ? 'New Password (leave empty to keep current)' : 'Password'),
+                // DateTimePicker::make('email_verified_at'),
                 // Textarea::make('two_factor_secret')
                 //     ->columnSpanFull(),
                 // Textarea::make('two_factor_recovery_codes')
@@ -34,11 +38,10 @@ class UserForm
                 TextInput::make('storage_used')
                     ->required()
                     ->numeric()
-                    ->default(0),
-                TextInput::make('is_admin')
-                    ->required()
-                    ->numeric()
-                    ->default(0),
+                    ->default(0)
+                    ->readOnly(),
+                Toggle::make('is_admin')
+                    ->required(),
             ]);
     }
 }

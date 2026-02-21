@@ -29,8 +29,8 @@ class AdminPanelProvider extends PanelProvider
             ->id('admin')
             ->path('admin')
             ->login()
-            ->brandName('My Project')
-            ->brandLogo(asset('logo.png'))
+            ->brandName('Drive')
+            ->brandLogo(asset('img/logo.png'))
             ->colors([
                 'primary' => Color::Amber,
                 'gray' => Color::Slate,
@@ -39,6 +39,7 @@ class AdminPanelProvider extends PanelProvider
                 'warning' => Color::Orange,
                 'danger' => Color::Rose,
             ])
+            ->sidebarCollapsibleOnDesktop()
             ->discoverResources(in: app_path('Filament/Resources'), for: 'App\Filament\Resources')
             ->discoverPages(in: app_path('Filament/Pages'), for: 'App\Filament\Pages')
             ->pages([
