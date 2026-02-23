@@ -39,9 +39,9 @@ class FileController extends Controller
         }
 
         // Update user's storage_used column by adding the total size of the uploaded files
-        if ($totalSize > 0) {
-            $user->increment('storage_used', $totalSize);
-        }
+        // if ($totalSize > 0) {
+        //     $user->increment('storage_used', $totalSize);
+        // }
 
         return redirect()
             ->back()
@@ -60,8 +60,8 @@ class FileController extends Controller
         Storage::disk('public')->delete($file->path);
         $file->delete();
 
-        $user = $request->user();
-        $user->decrement('storage_used', $file->size);
+        // $user = $request->user();
+        // $user->decrement('storage_used', $file->size);
 
         return redirect()
             ->back()
