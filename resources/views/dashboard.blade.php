@@ -160,7 +160,7 @@
                             {{ $file->name }}
                         </div>
                         <div class="mt-1 text-[10px] uppercase tracking-wide text-slate-400">
-                            {{ number_format($file->getSizeInMB(), 2) }} MB
+                            {{ $file->size_in_kb }} KB
                         </div>
                         <form
                             method="POST"

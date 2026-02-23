@@ -5,7 +5,6 @@ namespace App\Models;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\SoftDeletes;
 use Illuminate\Support\Facades\Auth;
-use Illuminate\Support\Facades\DB;
 
 class Folder extends Model
 {
@@ -29,20 +28,6 @@ class Folder extends Model
                     : Auth::id();
             }
 
-            // if (($folder->is_root ?? false) === true) {
-            //     return;
-            // }
-
-            if ($folder->parent_id === null && $folder->user_id !== null) {
-                $rootId = DB::table('folders')
-                    ->where('user_id', $folder->user_id)
-                    // ->where('is_root', true)
-                    ->value('id');
-
-                if ($rootId) {
-                    $folder->parent_id = (int) $rootId;
-                }
-            }
         });
 
         // static::deleting(function (Folder $folder): void {
