@@ -115,7 +115,6 @@ class User extends Resource
 
             // Custom
             Number::make('Storage Used', 'storage_used')->exceptOnForms()
-                ->displayUsing(fn ($value) => round($value / 1024 / 1024, 2).' MB')
                 ->showOnPreview(),
             HasMany::make('Folders')->showOnPreview(),
             HasMany::make('Files')->showOnPreview(),

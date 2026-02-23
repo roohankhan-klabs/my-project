@@ -10,12 +10,15 @@ use Illuminate\Support\Facades\DB;
 class Folder extends Model
 {
     use SoftDeletes;
+
     protected $fillable = [
         'user_id',
         'parent_id',
         // 'is_root',
         'name',
     ];
+
+    protected $appends = ['total_size'];
 
     protected static function booted(): void
     {
@@ -67,5 +70,10 @@ class Folder extends Model
     public function files()
     {
         return $this->hasMany(File::class);
+    }
+
+    public function getTotalSizeAttribute()
+    {
+        return $this->files()->sum('size');
     }
 }

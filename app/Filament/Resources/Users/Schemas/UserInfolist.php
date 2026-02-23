@@ -2,9 +2,13 @@
 
 namespace App\Filament\Resources\Users\Schemas;
 
+use App\Models\User;
+use Filament\Forms\Components\Toggle;
+use Filament\Forms\Components\ToggleButtons;
 use Filament\Infolists\Components\TextEntry;
-use Filament\Infolists\Components\IconEntry;
+use Filament\Schemas\Components\Section;
 use Filament\Schemas\Schema;
+use Filament\Support\Icons\Heroicon;
 
 class UserInfolist
 {
@@ -12,14 +16,15 @@ class UserInfolist
     {
         return $schema
             ->components([
-                TextEntry::make('name'),
-                TextEntry::make('email')
-                    ->label('Email address'),
-                TextEntry::make('storage_used')
-                    ->numeric()
-                    ->formatStateUsing(fn ($state) => number_format($state / 1024, 2) . ' MB'),
-                IconEntry::make('is_admin')
-                    ->boolean(),
+                Section::make("User Information")
+                    ->schema([
+                        TextEntry::make('name'),
+                        TextEntry::make('email'),
+
+                        Toggle::make('is_admin')
+                            ->columnSpanFull()->disabled(),
+                        TextEntry::make('created_at')->date(),
+                    ])
             ]);
     }
 }

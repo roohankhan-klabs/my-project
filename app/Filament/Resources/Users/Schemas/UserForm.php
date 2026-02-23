@@ -3,9 +3,8 @@
 namespace App\Filament\Resources\Users\Schemas;
 
 use Filament\Forms\Components\DateTimePicker;
-use Filament\Forms\Components\TextInput;
 use Filament\Forms\Components\Textarea;
-use Filament\Forms\Components\ToggleButtons;
+use Filament\Forms\Components\TextInput;
 use Filament\Forms\Components\Toggle;
 use Filament\Schemas\Schema;
 use Filament\Support\Enums\Operation;
@@ -35,12 +34,13 @@ class UserForm
                 // Textarea::make('two_factor_recovery_codes')
                 //     ->columnSpanFull(),
                 // DateTimePicker::make('two_factor_confirmed_at'),
-                TextInput::make('storage_used')
-                    ->required()
-                    ->numeric()
-                    ->default(0)
-                    ->readOnly(),
+                // TextInput::make('storage_used')
+                //     ->required()
+                //     ->numeric()
+                //     ->default(0)
+                //     ->readOnly(),
                 Toggle::make('is_admin')
+                    ->columnSpanFull()
                     ->required(),
             ]);
     }

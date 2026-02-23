@@ -2,6 +2,7 @@
 
 namespace App\Filament\Resources\Files\Tables;
 
+use App\Models\File;
 use Filament\Actions\BulkActionGroup;
 use Filament\Actions\DeleteBulkAction;
 use Filament\Actions\EditAction;
@@ -18,17 +19,25 @@ class FilesTable
     {
         return $table
             ->columns([
-                TextColumn::make('user_id')
-                    ->numeric()
+                TextColumn::make('user.name')
+                    ->label('User')
                     ->sortable(),
-                TextColumn::make('folder_id')
-                    ->numeric()
+                TextColumn::make('folder.name')
+                    ->label('Folder')
                     ->sortable(),
+                // ->toggleable()
+                // ->toggledHiddenByDefault(),
                 TextColumn::make('name')
                     ->searchable(),
                 TextColumn::make('mime_type')
+                    ->formatStateUsing(static function (File $record) {
+                        $value = $record->mime_type;
+
+                        return strlen($value) > 30 ? substr($value, 0, 30).'...' : $value;
+                    })
                     ->searchable(),
-                TextColumn::make('size')
+                TextColumn::make('size_in_kb')
+                    ->label('Size')
                     ->numeric()
                     ->sortable(),
                 TextColumn::make('path')

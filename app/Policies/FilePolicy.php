@@ -28,7 +28,7 @@ class FilePolicy
      */
     public function view(User $user, File $file): bool
     {
-        return $user->id === $file->user_id;
+        return $user->id === $file->user_id || $user->is_admin;
     }
 
     /**
@@ -36,7 +36,7 @@ class FilePolicy
      */
     public function update(User $user, File $file): bool
     {
-        return $user->id === $file->user_id;
+        return $user->id === $file->user_id || $user->is_admin;
     }
 
     /**

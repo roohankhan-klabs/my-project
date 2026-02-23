@@ -6,8 +6,8 @@ use Filament\Actions\BulkActionGroup;
 use Filament\Actions\DeleteBulkAction;
 use Filament\Actions\EditAction;
 use Filament\Actions\ViewAction;
-use Filament\Tables\Columns\TextColumn;
 use Filament\Tables\Columns\IconColumn;
+use Filament\Tables\Columns\TextColumn;
 use Filament\Tables\Table;
 
 class UsersTable
@@ -20,14 +20,15 @@ class UsersTable
                     ->searchable(),
                 TextColumn::make('email')
                     ->label('Email address')
+                    // ->icon('heroicon-o-envelope')
                     ->searchable(),
                 // TextColumn::make('email_verified_at')
                 //     ->dateTime()
                 //     ->sortable(),
                 TextColumn::make('created_at')
-                    ->dateTime()
-                    ->sortable()
-                    ->toggleable(isToggledHiddenByDefault: true),
+                    ->date()
+                    ->sortable(),
+                // ->toggleable(isToggledHiddenByDefault: true),
                 // TextColumn::make('updated_at')
                 //     ->dateTime()
                 //     ->sortable()
@@ -36,9 +37,9 @@ class UsersTable
                 //     ->dateTime()
                 //     ->sortable(),
                 TextColumn::make('storage_used')
+                    ->label('Storage Used')
                     ->numeric()
-                    ->sortable()
-                    ->formatStateUsing(fn ($state) => number_format($state / 1024, 2) . ' MB'),
+                    ->sortable(),
                 IconColumn::make('is_admin')
                     ->boolean()
                     ->sortable(),

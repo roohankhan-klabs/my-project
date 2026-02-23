@@ -11,8 +11,8 @@ use Filament\Actions\DeleteAction;
 use Filament\Actions\DeleteBulkAction;
 use Filament\Actions\EditAction;
 use Filament\Actions\ViewAction;
-use Filament\Forms\Components\TextInput;
 use Filament\Forms\Components\Select;
+use Filament\Forms\Components\TextInput;
 use Filament\Infolists\Components\TextEntry;
 use Filament\Resources\Resource;
 use Filament\Schemas\Schema;
@@ -20,7 +20,6 @@ use Filament\Support\Icons\Heroicon;
 use Filament\Tables\Columns\TextColumn;
 use Filament\Tables\Table;
 use UnitEnum;
-use Closure;
 
 class FolderResource extends Resource
 {
@@ -33,14 +32,15 @@ class FolderResource extends Resource
     protected static ?string $navigationParentItem = 'Users';
 
     protected static ?int $navigationSort = 1;
-    
+
     // protected static string | UnitEnum | null $navigationGroup = 'Shop';
 
     public static function form(Schema $schema): Schema
     {
         return $schema
             ->components([
-                Select::make('User')
+                Select::make('user_id')
+                    ->label('User')
                     ->required()
                     ->options(function () {
                         return User::where('is_admin', false)->pluck('name', 'id')->toArray();
@@ -58,9 +58,10 @@ class FolderResource extends Resource
                     ->label('Folder')
                     ->options(function (callable $get) {
                         $userId = $get('user_id');
-                        if (!$userId) {
+                        if (! $userId) {
                             return [];
                         }
+
                         return Folder::where('user_id', $userId)
                             ->whereNull('parent_id')
                             ->pluck('name', 'id')
@@ -69,9 +70,10 @@ class FolderResource extends Resource
                     ->searchable()
                     ->getSearchResultsUsing(function (string $search, callable $get) {
                         $userId = $get('user_id');
-                        if (!$userId) {
+                        if (! $userId) {
                             return [];
                         }
+
                         return Folder::where('user_id', $userId)
                             ->whereNull('parent_id')
                             ->where('name', 'like', "%{$search}%")
@@ -110,27 +112,24 @@ class FolderResource extends Resource
     {
         return $table
             ->recordTitleAttribute('Folder')
-            ->modifyQueryUsing(fn ($query) => $query->with(['user', 'parent', 'files']))
-            ->columns([                
+            ->columns([
                 TextColumn::make('name')
                     ->searchable(),
-                TextColumn::make('user_name')
+                TextColumn::make('user.name')
                     ->label('User')
-                    ->sortable()
-                    ->formatStateUsing(fn ($record) => $record->user ? $record->user->name : '-'),
-                TextColumn::make('parent_name')
+                    ->sortable(),
+                TextColumn::make('parent.name')
                     ->label('Folder')
                     ->sortable()
-                    ->formatStateUsing(fn ($record) => $record->parent ? $record->parent->name : '-'),
-                TextColumn::make('storage_used')
+                    ->placeholder('-'),
+                TextColumn::make('total_size')
                     ->label('Storage Used')
+                    ->numeric()
                     ->sortable()
-                    ->formatStateUsing(function ($record) {
-                        if (!$record->relationLoaded('files')) {
-                            return 'Loading...';
-                        }
-                        $totalSize = $record->files->sum('size');
-                        return number_format($totalSize / 1024 / 1024, 2) . ' MB';
+                    ->formatStateUsing(function (Folder $record) {
+                        $totalSize = $record->getTotalSizeAttribute() ?? 0;
+
+                        return number_format($totalSize / 1024 / 1024, 2).' MB';
                     }),
                 TextColumn::make('created_at')
                     ->dateTime()

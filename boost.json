@@ -1,6 +1,6 @@
 {
     "agents": [
-        "cursor"
+        "gemini"
     ],
     "guidelines": true,
     "herd_mcp": true,

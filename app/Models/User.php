@@ -3,11 +3,11 @@
 namespace App\Models;
 
 // use Illuminate\Contracts\Auth\MustVerifyEmail;
+use Filament\Models\Contracts\FilamentUser;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Foundation\Auth\User as Authenticatable;
 use Illuminate\Notifications\Notifiable;
 use Laravel\Nova\Actions\Actionable;
-use Filament\Models\Contracts\FilamentUser;
 
 class User extends Authenticatable implements FilamentUser
 {
@@ -63,5 +63,12 @@ class User extends Authenticatable implements FilamentUser
     public function canAccessPanel(\Filament\Panel $panel): bool
     {
         return true; // Allow all authenticated users to access Filament
+    }
+
+    protected $appends = ['storage_used'];
+
+    public function getStorageUsedAttribute()
+    {
+        return $this->files ? number_format($this->files()->sum('size') / 1024 / 1024, 2).' MB' : '0 MB';
     }
 }
