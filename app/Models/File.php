@@ -42,6 +42,26 @@ class File extends Model
                 }
             }
         });
+
+        static::saving(function (File $file): void {
+            // Auto-populate mime_type and size when path is set and they are null
+            if ($file->isDirty('path') && $file->path && (! $file->mime_type || ! $file->size)) {
+                $fullPath = storage_path('app/public/'.$file->path);
+                if (file_exists($fullPath)) {
+                    if (! $file->mime_type) {
+                        $file->mime_type = mime_content_type($fullPath);
+                    }
+                    if (! $file->size) {
+                        $file->size = filesize($fullPath);
+                    }
+                }
+            }
+
+            // Auto-populate name from path if name is not set
+            if ($file->isDirty('path') && $file->path && ! $file->name) {
+                $file->name = basename($file->path);
+            }
+        });
     }
 
     public function user()
@@ -54,8 +74,10 @@ class File extends Model
         return $this->belongsTo(Folder::class);
     }
 
-    public function getSizeInMB()
+    protected $appends = ['size_in_kb'];
+
+    public function getSizeInKbAttribute()
     {
-        return $this->size / 1024 / 1024;
+        return $this->size ? number_format($this->size / 1024, 2).' KB' : '0 KB';
     }
 }

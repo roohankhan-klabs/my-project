@@ -4,6 +4,7 @@ namespace App\Http\Controllers;
 
 use App\Models\File as FileModel;
 use Illuminate\Http\Request;
+use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\Storage;
 
 class FileController extends Controller
@@ -23,7 +24,7 @@ class FileController extends Controller
         $createdFiles = [];
 
         foreach ($uploadedFiles as $uploadedFile) {
-            $path = $uploadedFile->store('uploads/' . $user->id, 'public');
+            $path = $uploadedFile->store('uploads/'.$user->id, 'public');
 
             FileModel::create([
                 'user_id' => $user->id,
@@ -38,9 +39,9 @@ class FileController extends Controller
         }
 
         // Update user's storage_used column by adding the total size of the uploaded files
-        if ($totalSize > 0) {
-            $user->increment('storage_used', $totalSize);
-        }
+        // if ($totalSize > 0) {
+        //     $user->increment('storage_used', $totalSize);
+        // }
 
         return redirect()
             ->back()
@@ -59,11 +60,29 @@ class FileController extends Controller
         Storage::disk('public')->delete($file->path);
         $file->delete();
 
-        $user = $request->user();
-        $user->decrement('storage_used', $file->size);
+        // $user = $request->user();
+        // $user->decrement('storage_used', $file->size);
 
         return redirect()
             ->back()
             ->with('success', 'File deleted.');
+    }
+
+    public function download(FileModel $file)
+    {
+        $user = Auth::user();
+
+        // Check if user owns the file or is admin
+        if ($user->id !== $file->user_id && ! $user->is_admin) {
+            abort(403, 'Unauthorized');
+        }
+
+        $filePath = storage_path('app/public/'.$file->path);
+
+        if (! file_exists($filePath)) {
+            abort(404, 'File not found');
+        }
+
+        return response()->download($filePath, $file->name);
     }
 }

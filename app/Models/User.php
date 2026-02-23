@@ -3,12 +3,13 @@
 namespace App\Models;
 
 // use Illuminate\Contracts\Auth\MustVerifyEmail;
+use Filament\Models\Contracts\FilamentUser;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Foundation\Auth\User as Authenticatable;
 use Illuminate\Notifications\Notifiable;
 use Laravel\Nova\Actions\Actionable;
 
-class User extends Authenticatable
+class User extends Authenticatable implements FilamentUser
 {
     /** @use HasFactory<\Database\Factories\UserFactory> */
     use Actionable, HasFactory, Notifiable;
@@ -23,6 +24,7 @@ class User extends Authenticatable
         'email',
         'password',
         'storage_used',
+        'is_admin',
     ];
 
     /**
@@ -33,7 +35,6 @@ class User extends Authenticatable
     protected $hidden = [
         'password',
         'remember_token',
-        'is_admin'
     ];
 
     /**
@@ -57,5 +58,17 @@ class User extends Authenticatable
     public function files()
     {
         return $this->hasMany(File::class);
+    }
+
+    public function canAccessPanel(\Filament\Panel $panel): bool
+    {
+        return true; // Allow all authenticated users to access Filament
+    }
+
+    protected $appends = ['storage_used'];
+
+    public function getStorageUsedAttribute()
+    {
+        return $this->files ? number_format($this->files()->sum('size') / 1024 / 1024, 2).' MB' : '0 MB';
     }
 }
