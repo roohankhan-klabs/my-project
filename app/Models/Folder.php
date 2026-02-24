@@ -61,4 +61,17 @@ class Folder extends Model
     {
         return $this->files()->sum('size');
     }
+
+    public function getBreadcrumbPath(): array
+    {
+        $path = [];
+        $current = $this;
+
+        while ($current) {
+            array_unshift($path, $current);
+            $current = $current->parent;
+        }
+
+        return $path;
+    }
 }

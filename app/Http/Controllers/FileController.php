@@ -68,6 +68,31 @@ class FileController extends Controller
             ->with('success', 'File deleted.');
     }
 
+    public function move(Request $request)
+    {
+        $validated = $request->validate([
+            'file_id' => 'required|exists:files,id',
+            'folder_id' => 'nullable|exists:folders,id',
+        ]);
+
+        $file = FileModel::where('user_id', $request->user()->id)
+            ->findOrFail($validated['file_id']);
+
+        if (isset($validated['folder_id']) && $validated['folder_id'] !== null) {
+            $folder = \App\Models\Folder::where('user_id', $request->user()->id)
+                ->findOrFail($validated['folder_id']);
+            $file->folder_id = $folder->id;
+        } else {
+            $file->folder_id = null;
+        }
+
+        $file->save();
+
+        return redirect()
+            ->back()
+            ->with('success', 'File moved successfully.');
+    }
+
     public function download(FileModel $file)
     {
         $user = Auth::user();
