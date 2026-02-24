@@ -27,6 +27,8 @@ class UserController extends Controller
                 ->firstOrFail();
         }
 
+        $breadcrumbPath = $currentFolder ? $currentFolder->getBreadcrumbPath() : [];
+
         $foldersQuery = Folder::query()
             ->where('user_id', $user->id)
             ->orderBy('name');
@@ -54,6 +56,6 @@ class UserController extends Controller
         }
         // dd($files, $folders);
 
-        return view('dashboard', compact('folders', 'files', 'currentFolder', 'rootFolder'));
+        return view('dashboard', compact('folders', 'files', 'currentFolder', 'rootFolder', 'breadcrumbPath'));
     }
 }
