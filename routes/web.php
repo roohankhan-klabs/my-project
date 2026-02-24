@@ -33,8 +33,8 @@ Route::middleware('auth')->group(function () {
         Route::get('/dashboard', [UserController::class, 'dashboard'])->name('dashboard');
 
         Route::post('/folders', [FolderController::class, 'store'])->name('folders.store');
-        Route::patch('/folders/{folder}', [FolderController::class, 'update'])->name('folders.update');
         Route::patch('/folders/move', [FolderController::class, 'move'])->name('folders.move');
+        Route::patch('/folders/{folder}', [FolderController::class, 'update'])->name('folders.update');
         Route::delete('/folders', [FolderController::class, 'delete'])->name('folders.delete');
 
         Route::post('/files', [FileController::class, 'store'])->name('files.store');
