@@ -16,11 +16,14 @@ class UserMiddleware
      */
     public function handle(Request $request, Closure $next): Response
     {
-        if (Auth::check() && !Auth::user()->is_admin) {
+        if (Auth::check() && ! Auth::user()->is_admin) {
             return $next($request);
         }
-        else {
-            return redirect()->to('/dashboard');
+
+        if ($request->expectsJson()) {
+            return response()->json(['message' => 'Forbidden.'], 403);
         }
+
+        return redirect()->to('/dashboard');
     }
 }

@@ -8,11 +8,12 @@ use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Foundation\Auth\User as Authenticatable;
 use Illuminate\Notifications\Notifiable;
 use Laravel\Nova\Actions\Actionable;
+use Laravel\Sanctum\HasApiTokens;
 
 class User extends Authenticatable implements FilamentUser
 {
     /** @use HasFactory<\Database\Factories\UserFactory> */
-    use Actionable, HasFactory, Notifiable;
+    use Actionable, HasApiTokens, HasFactory, Notifiable;
 
     /**
      * The attributes that are mass assignable.

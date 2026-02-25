@@ -18,11 +18,15 @@ class FolderController extends Controller
             'parent_id' => 'nullable|exists:folders,id',
         ]);
 
-        Folder::create([
+        $folder = Folder::create([
             'user_id' => $user->id,
             'parent_id' => $validated['parent_id'] ?? null,
             'name' => $validated['name'],
         ]);
+
+        if ($request->expectsJson()) {
+            return response()->json(['message' => 'Folder created successfully.', 'folder' => $folder], 201);
+        }
 
         return redirect()
             ->back()
@@ -41,6 +45,10 @@ class FolderController extends Controller
 
         $folder->update(['name' => $validated['name']]);
 
+        if ($request->expectsJson()) {
+            return response()->json(['message' => 'Folder renamed.', 'folder' => $folder]);
+        }
+
         return redirect()
             ->back()
             ->with('success', 'Folder renamed.');
@@ -56,6 +64,10 @@ class FolderController extends Controller
             ->findOrFail($validated['folder_id']);
 
         $this->deleteFolderAndContents($folder);
+
+        if ($request->expectsJson()) {
+            return response()->json(['message' => 'Folder deleted.']);
+        }
 
         return redirect()
             ->back()
@@ -106,6 +118,10 @@ class FolderController extends Controller
             if ($folder->id === $parentFolder->id || $this->isChild($folder, $parentFolder->id)) {
                 Log::info('Move blocked - folder into itself or child');
 
+                if ($request->expectsJson()) {
+                    return response()->json(['message' => 'Cannot move a folder into itself or its children.'], 422);
+                }
+
                 return redirect()->back()->withErrors(['Cannot move a folder into itself or its children.']);
             }
 
@@ -120,6 +136,10 @@ class FolderController extends Controller
         $folder->save();
 
         Log::info('Folder saved successfully', ['folder_id' => $folder->id]);
+
+        if ($request->expectsJson()) {
+            return response()->json(['message' => 'Folder moved successfully.', 'folder' => $folder]);
+        }
 
         return redirect()
             ->back()

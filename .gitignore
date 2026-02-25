@@ -29,3 +29,5 @@ AGENTS.md
 GEMINI.md
 laravel-nova.md
 coding-agent-instructions.md
+frontend/node_modules
+tmpclaude-*

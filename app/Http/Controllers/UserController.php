@@ -4,15 +4,16 @@ namespace App\Http\Controllers;
 
 use App\Models\File;
 use App\Models\Folder;
+use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
 
 class UserController extends Controller
 {
-    public function dashboard()
+    public function dashboard(Request $request)
     {
         $user = Auth::user();
 
-        $currentFolderId = request()->query('folder');
+        $currentFolderId = $request->query('folder');
         $currentFolder = null;
 
         $rootFolder = Folder::query()
@@ -54,7 +55,15 @@ class UserController extends Controller
         } else {
             $files = $filesQuery->whereNull('folder_id')->get();
         }
-        // dd($files, $folders);
+
+        if ($request->expectsJson()) {
+            return response()->json([
+                'folders' => $folders,
+                'files' => $files,
+                'current_folder' => $currentFolder,
+                'breadcrumb_path' => $breadcrumbPath,
+            ]);
+        }
 
         return view('dashboard', compact('folders', 'files', 'currentFolder', 'rootFolder', 'breadcrumbPath'));
     }

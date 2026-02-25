@@ -43,3 +43,6 @@ Route::middleware('auth')->group(function () {
         Route::get('/files/{file}/download', [FileController::class, 'download'])->name('files.download');
     });
 });
+
+// Vue SPA catch-all — serves the built frontend for /spa/* routes
+Route::get('/spa/{any?}', fn () => file_get_contents(public_path('spa/index.html')))->where('any', '.*');

@@ -26,7 +26,7 @@ class FileController extends Controller
         foreach ($uploadedFiles as $uploadedFile) {
             $path = $uploadedFile->store('uploads/'.$user->id, 'public');
 
-            FileModel::create([
+            $file = FileModel::create([
                 'user_id' => $user->id,
                 'folder_id' => $validated['folder_id'] ?? null,
                 'name' => $uploadedFile->getClientOriginalName(),
@@ -35,6 +35,7 @@ class FileController extends Controller
                 'path' => $path,
             ]);
 
+            $createdFiles[] = $file;
             $totalSize += $uploadedFile->getSize();
         }
 
@@ -42,6 +43,13 @@ class FileController extends Controller
         // if ($totalSize > 0) {
         //     $user->increment('storage_used', $totalSize);
         // }
+
+        if ($request->expectsJson()) {
+            return response()->json([
+                'message' => count($uploadedFiles) > 1 ? 'Files uploaded successfully.' : 'File uploaded successfully.',
+                'files' => $createdFiles,
+            ], 201);
+        }
 
         return redirect()
             ->back()
@@ -62,6 +70,10 @@ class FileController extends Controller
 
         // $user = $request->user();
         // $user->decrement('storage_used', $file->size);
+
+        if ($request->expectsJson()) {
+            return response()->json(['message' => 'File deleted.']);
+        }
 
         return redirect()
             ->back()
@@ -87,6 +99,10 @@ class FileController extends Controller
         }
 
         $file->save();
+
+        if ($request->expectsJson()) {
+            return response()->json(['message' => 'File moved successfully.', 'file' => $file]);
+        }
 
         return redirect()
             ->back()
