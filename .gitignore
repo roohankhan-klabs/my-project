@@ -22,12 +22,5 @@
 Homestead.json
 Homestead.yaml
 Thumbs.db
-.gemini
-.cursor
-.agents
-AGENTS.md
-GEMINI.md
-laravel-nova.md
-coding-agent-instructions.md
 frontend/node_modules
 tmpclaude-*
