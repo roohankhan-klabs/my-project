@@ -20,5 +20,5 @@
 
 <script setup>
 defineProps({ path: { type: Array, default: () => [] } })
-defineEmits(['navigate'])
+const emit = defineEmits(['navigate'])
 </script>
