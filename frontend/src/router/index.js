@@ -45,7 +45,17 @@ router.beforeEach(async (to) => {
     return { name: 'login' }
   }
 
+  // Admin users must use Nova — block them from the Vue SPA entirely
+  if (to.meta.requiresAuth && auth.isAdmin) {
+    window.location.href = '/nova'
+    return false
+  }
+
   if (to.meta.requiresGuest && auth.isAuthenticated) {
+    if (auth.isAdmin) {
+      window.location.href = '/nova'
+      return false
+    }
     return { name: 'dashboard' }
   }
 })

@@ -99,7 +99,7 @@ async function handleLogin() {
   try {
     const result = await auth.login(loginForm.value)
     if (result.is_admin) {
-      alert('Admin accounts use the Nova panel. Please visit /nova/resources/users directly in your browser.')
+      window.location.href = '/nova/resources/users'
     } else {
       router.push('/dashboard')
     }
@@ -111,10 +111,10 @@ async function handleLogin() {
 async function handleRegister() {
   try {
     const result = await auth.register(registerForm.value)
-    if (!result.is_admin) {
-      router.push('/dashboard')
+    if (result.is_admin) {
+      window.location.href = '/nova/resources/users'
     } else {
-      alert('Admin account created. Please visit /nova/resources/users directly in your browser.')
+      router.push('/dashboard')
     }
   } catch {
     // error is set in the store

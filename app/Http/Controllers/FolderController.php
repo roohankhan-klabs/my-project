@@ -115,7 +115,7 @@ class FolderController extends Controller
             ]);
 
             // Prevent moving a folder into itself or its children
-            if ($folder->id === $parentFolder->id || $this->isChild($folder, $parentFolder->id)) {
+            if ($folder->id === $parentFolder->id || $this->isDescendant($folder, $parentFolder->id)) {
                 Log::info('Move blocked - folder into itself or child');
 
                 if ($request->expectsJson()) {
@@ -147,18 +147,20 @@ class FolderController extends Controller
     }
 
     /**
-     * Check if target folder is a child of source folder
+     * Check if targetId is a descendant (child, grandchild, etc.) of source.
+     * Used to prevent moving a folder into one of its own children.
      */
-    private function isChild(Folder $source, int $targetId): bool
+    private function isDescendant(Folder $source, int $targetId): bool
     {
-        $current = $source;
-        while ($current->parent_id) {
-            if ($current->parent_id === $targetId) {
+        $children = Folder::where('parent_id', $source->id)->get();
+
+        foreach ($children as $child) {
+            if ($child->id === $targetId) {
                 return true;
             }
-            $current = Folder::find($current->parent_id);
-            if (! $current) {
-                break;
+
+            if ($this->isDescendant(Folder::find($child->id), $targetId)) {
+                return true;
             }
         }
 

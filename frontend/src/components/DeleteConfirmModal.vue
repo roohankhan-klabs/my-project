@@ -1,5 +1,5 @@
 <template>
-  <div class="fixed inset-0 z-50 bg-slate-900/40 flex items-center justify-center px-4">
+  <div class="fixed inset-0 z-50 bg-slate-900/40 flex items-center justify-center px-4" @click.self="emit('cancel')">
     <div class="bg-white rounded-xl shadow-lg p-6 w-full max-w-sm">
       <h3 class="text-sm font-semibold text-slate-900 mb-2">
         Delete {{ itemType === 'folder' ? 'Folder' : 'File' }}?
@@ -30,5 +30,5 @@ defineProps({
   itemName: { type: String, default: '' },
   itemType: { type: String, default: 'item' },
 })
-defineEmits(['confirm', 'cancel'])
+const emit = defineEmits(['confirm', 'cancel'])
 </script>
